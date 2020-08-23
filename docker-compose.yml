@@ -1,16 +1,14 @@
----
 version: '3.5'
 services:
-
-  test:
-    build:
-      context: .
-    tty: true
-    environment:
-      MIGRADO_DB: test
-      MIGRADO_HOST: arangodb
-    volumes:
-      - .:/app
+  # test:
+  #   build:
+  #     context: .
+  #   tty: true
+  #   environment:
+  #     MIGRADO_DB: test
+  #     MIGRADO_HOST: arangodb
+  #   volumes:
+  #     - .:/app
 
   arangodb:
     image: arangodb
