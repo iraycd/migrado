@@ -2,6 +2,7 @@ import { Database, CollectionType, aql } from 'arangojs';
 import { DocumentCollection, CollectionMetadata } from 'arangojs/collection';
 import { Document } from 'arangojs/documents';
 import { Transaction } from 'arangojs/transaction';
+import { logger } from './utils';
 
 export interface IMigrationClient {
     uri?: string;
@@ -16,7 +17,7 @@ export interface IMigrationClient {
 
 export interface IStateDocument {
     _key?: 'state';
-    migrationPath: string | null;
+    migrationKey: string | null;
 }
 
 export class MigrationClient {
@@ -44,6 +45,7 @@ export class MigrationClient {
 
     collectionExist = async (): Promise<Boolean> => {
         const collectionExist = await this.migrationCollection.exists();
+        collectionExist ? logger.info("State Collection Exists") : logger.info("State does not exist");
         return collectionExist;
     }
 
@@ -57,8 +59,10 @@ export class MigrationClient {
      */
     stateCollection = async (): Promise<CollectionMetadata> => {
         if (await this.collectionExist()) {
+            logger.info("Getting State Collection");
             return await this.migrationCollection.get();
         } else {
+            logger.info("Creating State Collection");
             return await this.migrationCollection.create({ type: CollectionType.DOCUMENT_COLLECTION });
         }
     }
@@ -71,7 +75,7 @@ export class MigrationClient {
         if (await this.stateCollection()) {
             const stateList = await this.database.query(aql`
                 FOR state IN ${this.migrationCollection}
-                SORT state.migrationPath DESC
+                SORT state.migrationKey DESC
                 RETURN state
             `);
             state = await stateList?.next();
@@ -79,17 +83,17 @@ export class MigrationClient {
                 return null;
             }
         } else {
-            state = { migrationPath: null }
+            state = { migrationKey: null }
         }
-        return state.migrationPath;
+        return state.migrationKey;
     }
 
     /**
      * Write State
      */
-    writeState = async (migrationPath: string, trx: Transaction) => {
+    writeState = async (migrationKey: string, trx: Transaction) => {
         let state = {
-            migrationPath
+            migrationKey
         }
         return await trx.step(() => this.migrationCollection.save(state));
     }

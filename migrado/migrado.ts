@@ -95,12 +95,12 @@ export const run = async (config: RunConfig) => {
         })
         try {
             if (direction === MIGRATION_DIRECTION.FORWARD) {
-                migration.forward(dbClient.database, trx)
+                await migration.forward(dbClient.database, trx)
             }
             if (direction === MIGRATION_DIRECTION.REVERSE) {
-                migration.reverse(dbClient.database, trx)
+                await migration.reverse(dbClient.database, trx)
             }
-            dbClient.writeState(migrationKey, trx)
+            await dbClient.writeState(migrationKey, trx)
             await trx.commit()
         } catch (err) {
             await trx.abort();

@@ -1,14 +1,16 @@
 version: '3.5'
 services:
-  # test:
-  #   build:
-  #     context: .
-  #   tty: true
-  #   environment:
-  #     MIGRADO_DB: test
-  #     MIGRADO_HOST: arangodb
-  #   volumes:
-  #     - .:/app
+  test:
+    build:
+      context: .
+    command: sh -c "/wait && yarn test"
+    tty: true
+    environment:
+      HOST: arangodb
+      WAIT_HOSTS: arangodb:8529
+      WAIT_AFTER_HOSTS: 5
+    volumes:
+      - .:/app
 
   arangodb:
     image: arangodb

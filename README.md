@@ -2,7 +2,7 @@ migrado
 =======
 
 [![PyPI package](https://badge.fury.io/py/migrado.svg)](https://pypi.org/project/migrado/)
-[![Build status](https://travis-ci.org/protojour/migrado.svg?branch=master)](https://travis-ci.org/protojour/migrado)
+[![Build status](https://travis-ci.org/iraycd/migrado.svg?branch=master)](https://travis-ci.org/iraycd/migrado)
 
 🥑 ArangoDB migrations and batch processing manager.
 

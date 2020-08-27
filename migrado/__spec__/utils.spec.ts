@@ -31,11 +31,11 @@ describe('Test Ensure Path', () => {
 describe('Test Find Files', () => {
 
     it('directoryFileSort', async () => {
-        const files: any[] = await directoryFileSort(__dirname + '/migrations/')
+        const files: any = await directoryFileSort(__dirname + '/migrations/')
         expect(files).toEqual(
             expect.objectContaining({
                 "000_spec": expect.stringMatching("000_spec.js"),
-                "001_migration": expect.stringMatching("001_migration.js"),
+                "001_migration": expect.stringMatching("001_migration.ts"),
                 "002_not_good_migration": expect.stringMatching("002_not_good_migration.js")
             }));
     })

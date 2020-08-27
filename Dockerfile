@@ -1,21 +1,13 @@
-FROM python:3.7
-
-RUN apt-get -y update && \
-    apt-get -y install apt-transport-https
-RUN curl -OL https://download.arangodb.com/arangodb36/DEBIAN/Release.key
-RUN apt-key add Release.key >/dev/null
-RUN echo 'deb https://download.arangodb.com/arangodb36/DEBIAN/ /' > /etc/apt/sources.list.d/arangodb.list
-RUN apt-get -y update && \
-    apt-get -y install arangodb3-client
+FROM node:lts
 
 WORKDIR /app
-RUN pip install poetry
-COPY pyproject.toml /app
-RUN poetry install --no-interaction
+COPY package.json /app
+RUN yarn install
 
 COPY . /app
 
-CMD sleep 3 && \
-    poetry run pylint -E migrado && \
-    poetry run pytest -svv --cov=migrado --cov-report term-missing; \
-    make clean
+## Add the wait script to the image
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.5.0/wait /wait
+RUN chmod +x /wait
+
+CMD /wait && yarn test --runInBand

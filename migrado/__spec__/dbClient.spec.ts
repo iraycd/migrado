@@ -1,9 +1,9 @@
 import { MigrationClient } from "../dbClient";
 import { Database } from "arangojs";
 
-const MIGRADO_HOST = 'localhost'
+const MIGRADO_HOST = process.env.HOST || 'localhost'
 const MIGRADO_PORT = 8529
-const MIGRADO_DB = 'test'
+const MIGRADO_DB = 'db_client'
 const MIGRADO_USERNAME = 'root'
 
 

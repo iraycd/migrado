@@ -2,7 +2,7 @@ import { Database } from "arangojs";
 import { run, inspect } from "../migrado";
 import { MigrationClient } from "../dbClient";
 
-const MIGRADO_HOST = 'localhost'
+const MIGRADO_HOST = process.env.HOST || 'localhost'
 const MIGRADO_PORT = 8529
 const MIGRADO_DB = 'test'
 const MIGRADO_USERNAME = 'root'
@@ -60,7 +60,7 @@ describe('WHILE testing migrado client', () => {
                 port: MIGRADO_PORT
             })
             const userCollection = await client.database.createCollection('users')
-            userCollection.import([{
+            await userCollection.import([{
                 _key: 'ray',
                 fullName: 'Ray Ch',
             }, {

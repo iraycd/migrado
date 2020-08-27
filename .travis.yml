@@ -1,8 +1,9 @@
 dist: xenial
-language: python
-python:
-  - '3.6'
-  - '3.7'
+language: node_js
+node_js:
+  - node
+  - 'lts/*'
+cache: yarn
 services:
   - docker
 script:
