@@ -14,4 +14,4 @@ deploy:
   api_key: $NPM_TOKEN
   skip_cleanup: true
   on:
-    branch: release
+    tags: true

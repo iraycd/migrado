@@ -1,6 +1,6 @@
 {
   "name": "migrado",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ArangoDB migrations and batch processing manager",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,7 +25,7 @@
     "url": "git+https://github.com/iraycd/migrado.git"
   },
   "author": "Ray Chintalapati <i@iraycd.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/iraycd/migrado/issues"
   },
@@ -52,5 +52,10 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^2.1.1"
-  }
+  },
+  "keywords": [
+    "ArangoDB",
+    "Migration",
+    "Library"
+  ]
 }
