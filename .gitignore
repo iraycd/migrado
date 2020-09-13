@@ -19,3 +19,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Optional npm cache directory
 .npm
+
+# Don’t generate a yarn.lock lockfile and fail if an update is needed.
+# https://travis-ci.org/github/iraycd/migrado/jobs/726750758
+*.lock
