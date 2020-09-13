@@ -13,7 +13,7 @@
     "lint": "eslint '*/**/*.ts' --quiet --fix",
     "format": "prettier --write \"*/**/*.ts\" ",
     "prepare": "yarn build",
-    "prepublishOnly": "yarn format & yarn lint && npm publish",
+    "prepublishOnly": "yarn format & yarn lint",
     "release": "standard-version"
   },
   "repository": {
