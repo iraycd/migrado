@@ -1,6 +1,6 @@
 {
   "name": "migrado",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "ArangoDB migrations and batch processing manager",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,12 +13,8 @@
     "lint": "eslint '*/**/*.ts' --quiet --fix",
     "format": "prettier --write \"*/**/*.ts\" ",
     "prepare": "yarn build",
-    "prepublishOnly": "yarn test && yarn lint",
-    "release": "standard-version",
-    "postrelease": "yarn version",
-    "preversion": "yarn lint",
-    "version": "yarn format && git add -A src",
-    "postversion": "git push && git push --tags"
+    "prepublishOnly": "yarn test && npm publish ",
+    "release": "standard-version"
   },
   "repository": {
     "type": "git",
