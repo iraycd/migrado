@@ -1,6 +1,6 @@
 {
   "name": "migrado",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "ArangoDB migrations and batch processing manager",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
