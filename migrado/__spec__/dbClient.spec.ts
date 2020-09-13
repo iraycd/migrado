@@ -93,21 +93,3 @@ describe('WHILE testing migration client', () => {
         })
     })
 })
-
-
-
-// def test_read_write_state(clean_arango):
-
-//     client = MigrationClient(TLS, HOST, PORT, USERNAME, PASSWORD, DB, COLL)
-//     current = client.read_state()
-
-//     assert current == '0000'
-
-//     success = client.write_state('0001')
-//     current = client.read_state()
-
-//     assert success
-//     assert current == '0001'
-
-// client = MigrationClient(TLS, HOST, PORT, USERNAME, PASSWORD, DB, COLL)
-// client_two = MigrationClient(TLS, HOST, PORT, USERNAME, PASSWORD, DB, COLL)

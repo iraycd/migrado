@@ -3,7 +3,7 @@ services:
   test:
     build:
       context: .
-    command: sh -c "/wait && yarn test"
+    command: sh -c "/wait && yarn test --runInBand"
     tty: true
     environment:
       HOST: arangodb

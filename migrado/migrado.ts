@@ -51,7 +51,6 @@ export interface RunConfig {
 export const run = async (config: RunConfig) => {
     const { path, migrationConfig } = config;
     const { databaseName } = migrationConfig;
-    console.log('path', path)
     const migrationPath: any = await ensureDir(path) ? path : null;
     if (!migrationPath) {
         logger.error('Migration path does not exist')

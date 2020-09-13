@@ -72,7 +72,8 @@ export class MigrationClient {
      */
     readState = async (): Promise<Document> => {
         let state: IStateDocument
-        if (await this.stateCollection()) {
+        const stateCollection = await this.stateCollection();
+        if (stateCollection) {
             const stateList = await this.database.query(aql`
                 FOR state IN ${this.migrationCollection}
                 SORT state.migrationKey DESC
@@ -80,7 +81,7 @@ export class MigrationClient {
             `);
             state = await stateList?.next();
             if (!state) {
-                return null;
+                state = { migrationKey: null };
             }
         } else {
             state = { migrationKey: null }
