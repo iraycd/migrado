@@ -1,12 +1,12 @@
-migrado
+Migrado
 =======
 
-[![PyPI package](https://badge.fury.io/py/migrado.svg)](https://pypi.org/project/migrado/)
+[![Node package](https://badge.fury.io/js/migrado.svg)](https://www.npmjs.com/package/migrado)
 [![Build status](https://travis-ci.org/iraycd/migrado.svg?branch=master)](https://travis-ci.org/iraycd/migrado)
 
 🥑 ArangoDB migrations and batch processing manager.
 
-migrado is a command-line client that can help build and run schema or data migrations against your ArangoDB instance. 
+migrado is a command-line client that can help build and run schema or data migrations against your ArangoDB instance.
 
 migrado utilizes ArangoDB Transactions when running data migrations to ensure failed scripts are rolled back automatically. arangosh from the [ArangoDB Client Tools](https://www.arangodb.com/download-major/) is required to run schema migrations, however no transaction safety is available at this point.
 
@@ -17,12 +17,19 @@ If you have trouble, open an issue. Contributions are welcome.
 Installation
 ------------
 
-migrado requires Python 3.6 or higher.
+migrado requires Node.js 12 or higher.
 
 ```bash
-$ pip install --user migrado
+$ yarn add migrado
+```
+or 
+
+```bash
+$ npm install -s migrado
 ```
 
+
+<!-- 
 Usage
 -----
 
@@ -87,63 +94,15 @@ migrado uses a schema model based on JSON Schema, in YAML, and can use this to g
 
 Example schema:
 
-```yaml
----
-all: &all
-  _id:
-    type: string
-    readOnly: true
-  _key:
-    type: string
-    readOnly: true
-  _rev:
-    type: string
-    readOnly: true
-
-edges: &edges
-  _from:
-    type: string
-  _to:
-    type: string
-
-collections:
-
-  books:
-    type: object
-    properties:
-      <<: *all
-      title:
-        type: string
-      isbn:
-        type: string
-    required:
-      - title
-      - isbn
-
-  authors: 
-    # Note, you do not actually need to specify the object schema,
-    # but they can be used in API specs (e.g. OpenAPI) and/or validation,
-    # and may be handled by migrado in the future.
-
-edge_collections:
-
-  # authors --> books 
-  author_of:
-    type: object
-    properties:
-      <<: *all
-      <<: *edges
-    required:
-      - _from
-      - _to
-``` 
-
 Migration scripts
 -----------------
 
 Migration scripts are structured so they may be parsed and run easily by both migrado and ArangoDB. In addition, they are structured so they may be run manually against ArangoDB using `arangosh`.
 
 There are two types of script, **data** and **schema** migration scripts.
+
+
+-->
 
 ### Data migrations
 
@@ -156,22 +115,23 @@ Here's an example migration script for adding `new_field` in collection `things`
 ```javascript
 // write things
 
-function forward() {
+function forward(db) {
     var db = require("@arangodb").db
-    db._query(`
+    db.query(`
         FOR thing IN things
             UPDATE thing WITH { new_field: "some value" } IN things
     `)
 }
 
-function reverse() {
-    var db = require("@arangodb").db
-    db._query(`
+function reverse(db) {
+    db.query(`
         FOR thing IN things
             REPLACE thing WITH UNSET(thing, "new_field") IN things
     `)
 }
 ```
+
+[More Examples](/migrado/__spec__/migrations)
 
 Please make sure you read [limitations when running transactions](https://www.arangodb.com/docs/stable/transactions-limitations.html) in the ArangoDB documentation. In particular, _creation and deletion of databases, collections, and indexes_ is not allowed in transactions.
 
@@ -184,15 +144,13 @@ Schema migrations are structured the same way as data migrations, but `// write`
 Here's an example migration script generated from the YAML schema above:
 
 ```javascript
-function forward() {
-    var db = require("@arangodb").db
+function forward(db) {
     db._createDocumentCollection("books")
     db._createDocumentCollection("authors")
     db._createEdgeCollection("author_of")
 }
 
-function reverse() {
-    var db = require("@arangodb").db
+function reverse(db) {
     db._drop("books")
     db._drop("authors")
     db._drop("author_of")
@@ -201,7 +159,10 @@ function reverse() {
 
 Please be careful when running schema migrations in reverse. As you can see, the `reverse()` function above would drop your collections if you were to reverse beyond this point. Currently, you will not be able to do so for an initial migration.
 
-License
--------
 
-migrado is copyright © 2019 Protojour AS, and is licensed under MIT. See [LICENSE.txt](https://github.com/protojour/migrado/blob/master/LICENSE.txt) for details.
+Influenced From
+---------------
+
+- Django ORM - Python
+- [Umzug](https://www.npmjs.com/package/umzug)
+- [Migrado - Python](https://github.com/protojour/migrado)
