@@ -6,4 +6,4 @@ module.exports = {
         // add your reverse migration here
     }
 }
-`
+`;

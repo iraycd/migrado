@@ -21,10 +21,10 @@
         "noImplicitThis": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "outDir": "./build/",
+        "outDir": "dist",
         "preserveConstEnums": true,
         "removeComments": false,
-        "rootDir": "./migrado/",
+        "rootDir": "migrado",
         "strict": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
@@ -32,6 +32,7 @@
     },
     "exclude": [
         "node_modules",
-        "build"
+        "dist",
+        "**/__spec__/*"
     ]
 }

@@ -6,4 +6,12 @@ node_js:
 services:
   - docker
 script:
+  - yarn lint
   - make test
+deploy:
+  provider: npm
+  email: $NPM_EMAIL
+  api_key: $NPM_TOKEN
+  skip_cleanup: true
+  on:
+    branch: release
