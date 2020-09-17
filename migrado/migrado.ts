@@ -1,6 +1,6 @@
 import {
   ensureDir,
-  directoryFileSort,
+  getMigrationFileAsObject,
   logger,
   checkMigrations,
   checkDb,
@@ -11,63 +11,97 @@ import {
 } from "./utils";
 import { MigrationClient, IMigrationClient } from "./dbClient";
 
-// const init = (schema, path) => {
-//     // Use Orango.js For Schema
-//     // Create Collection which don't exist
-//     // All the collection should be created from migrations?? No.
-//     // Not required now.
-// }
-
-// const make = () => {
-//    // Not required right now.
-// }
 
 export interface InspectConfig {
   path: string;
-  migrationConfig: IMigrationClient;
+  dbConfig: IMigrationClient;
 }
 
-export const inspect = async (config: InspectConfig) => {
-  const { path, migrationConfig } = config;
-  const { databaseName } = migrationConfig;
+/**
+ * Title: Inspect the migration
+ * Description:
+ *  It's used to inspect the migration path and checks if there are any migrations pending.
+ *  sends out the log
+ * @param config
+ *  + Path - Path where the migrations are located
+ *  + Migration Config - the configuration of the DB to connect to ArangoDB.
+ */
+export const inspect = async (config: InspectConfig): Promise<void> => {
+
+  const { path, dbConfig } = config;
+  const { databaseName } = dbConfig;
+
+  // Ensuring the migration path
   const migrationPath: any = (await ensureDir(path)) ? path : null;
   if (!migrationPath) {
     logger.error("Migration path does not exist");
   }
+
+  // Getting all the migrations and sorting them
   const migrations: FilePathObject = sortKeys(
-    await directoryFileSort(migrationPath)
+    await getMigrationFileAsObject(migrationPath)
   );
+
+  // Making them an object.
   const migrationKeys: string[] = Object.keys(migrations);
-  checkMigrations(migrationKeys);
-  const lastMigrationKey = migrationKeys[migrationKeys.length - 1];
-  logger.info(`Latest migration on disk is ${lastMigrationKey}`);
-  checkDb(databaseName);
-  const dbClient: MigrationClient = new MigrationClient({
-    ...migrationConfig,
-  });
-  const migrationPathInDB = await dbClient.readState();
-  logger.info(`Latest migration on DB is ${migrationPathInDB}`);
+
+  // Note: Continue only if there are migration file in the directory
+  if (checkMigrations(migrationKeys)) {
+    // Getting the latest key
+    const lastMigrationKey = migrationKeys[migrationKeys.length - 1];
+    logger.info(`Latest migration on disk is ${lastMigrationKey}`);
+
+    // Getting the latest migration in the Database.
+    if (checkDb(databaseName)) {
+      const dbClient: MigrationClient = new MigrationClient({
+        ...dbConfig,
+      });
+      const migrationPathInDB = await dbClient.readState();
+      logger.info(`Latest migration on DB is ${migrationPathInDB}`);
+    }
+
+  }
 };
 
 export interface RunConfig {
   path: string;
   target?: string;
   current?: string;
-  migrationConfig: IMigrationClient;
+  dbConfig: IMigrationClient;
 }
 
-export const run = async (config: RunConfig) => {
-  const { path, migrationConfig } = config;
-  const { databaseName } = migrationConfig;
+
+/**
+ * Title: Running The Migration
+ * Description:
+ *  Here we run the migration for a single database.
+ * @param config
+ *  + Path - Path where the migrations are located
+ *  + Migration Config - the configuration of the DB to connect to ArangoDB.
+ */
+export const run = async (config: RunConfig): Promise<void> => {
+
+  const { path, dbConfig } = config;
+  const { databaseName } = dbConfig;
+
+  // Ensuring the migration path
   const migrationPath: any = (await ensureDir(path)) ? path : null;
   if (!migrationPath) {
     logger.error("Migration path does not exist");
   }
+
+  // Getting all the migrations and sorting them
   const migrations: FilePathObject = sortKeys(
-    await directoryFileSort(migrationPath)
+    await getMigrationFileAsObject(migrationPath)
   );
+
+  // Making them an object.
   const migrationKeys: string[] = Object.keys(migrations);
-  checkMigrations(migrationKeys);
+
+  if (!checkMigrations(migrationKeys)) {
+    throw Error("No migrations found")
+  };
+
   const lastMigrationKey = migrationKeys[migrationKeys.length - 1];
   logger.info(`Latest migration on disk is ${lastMigrationKey}`);
   checkDb(databaseName);
@@ -79,7 +113,7 @@ export const run = async (config: RunConfig) => {
   }
 
   const dbClient: MigrationClient = new MigrationClient({
-    ...migrationConfig,
+    ...dbConfig,
   });
   let state;
 

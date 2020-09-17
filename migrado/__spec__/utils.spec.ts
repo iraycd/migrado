@@ -1,6 +1,6 @@
 import {
   ensureDir,
-  directoryFileSort,
+  getMigrationFileAsObject,
   selectMigrations,
   MIGRATION_DIRECTION,
 } from "../utils";
@@ -31,8 +31,8 @@ describe("Test Ensure Path", () => {
 });
 
 describe("Test Find Files", () => {
-  it("directoryFileSort", async () => {
-    const files: any = await directoryFileSort(__dirname + "/migrations/");
+  it("getMigrationFileAsObject", async () => {
+    const files: any = await getMigrationFileAsObject(__dirname + "/migrations/");
     expect(files).toEqual(
       expect.objectContaining({
         "000_spec": expect.stringMatching("000_spec.js"),

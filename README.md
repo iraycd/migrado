@@ -14,6 +14,16 @@ migrado utilizes ArangoDB Transactions when running data migrations to ensure fa
 
 If you have trouble, open an issue. Contributions are welcome.
 
+## Features List
+
+- [x] feat: Basic Migration with Tests
+- [ ] fix: Readable code.
+- [ ] fix: Testing more with transaction and failing.
+- [ ] feat: Command Line for Migration
+- [ ] feat: Multiple Database with tests.
+- [ ] feat: Testing with multi-tenancy example.
+- [ ] feat: Backup db before migrations.
+
 Installation
 ------------
 
@@ -28,81 +38,6 @@ or
 $ npm install -s migrado
 ```
 
-
-<!-- 
-Usage
------
-
-migrado can create a migrations directory and generate an initial set of collections from the given schema file:
-
-```bash
-$ migrado init --schema schema.yml
-```
-
-See [YAML schemas](#yaml-schemas) for details. If no schema is specified, migrado will create an empty initial migration.
-
-To make a new template migration script:
-
-```bash
-$ migrado make --name rewrite_names
-```
-
-This will create a new file, `migrations/0002_rewrite_names.js` (`--name` is optional), which you can edit as you see fit. See [Migration scripts](#migration-scripts) for details.
-
-When you are ready, run all migrations not currently ran against the database: 
-
-```bash
-$ migrado run
-```
-
-migrado stores migration state in a configurable collection, see `--help` or [Environment vars](#environment-vars) for details.
-
-If you wrote a `reverse()` migration, you can revert to an earlier point by specifying a target migration id. To revert to the initial migration:
-
-```bash
-$ migrado run --target 0001
-```
-
-You can compare the current database migration state with migration files on disk with:
-
-```bash
-$ migrado inspect
-```
-
-Use the `--help` option for help on any command when using the client.
-
-Environment vars
-----------------
-
-The following environment variables are employed by migrado:
-
-- `MIGRADO_PATH`: Specifies the path to the migrations directory, replaces `-p`, `--path` (default: `migrations`).
-- `MIGRADO_DB`: Specifies the ArangoDB database name for generated migrations to interact with, replaces `-d`, `--db` (no default, but required for the `run` command).
-- `MIGRADO_COLL`: Specifies ArangoDb collection name to store migration state in, replaces `-c`, `--state-coll` (default: `migrado`).
-- `MIGRADO_TLS`: Use TLS for connection when running migrations, replaces `-T`, `--tls` (default: `False`).
-- `MIGRADO_HOST`: Specifies the database host for running migrations, replaces `-H`, `--host` (default: `localhost`).
-- `MIGRADO_PORT`: Specifies the database port for running migrations, replaces `-P`, `--port` (default: `8529`).
-- `MIGRADO_USER`: Specifies the database username for running migrations, replaces `-U`, `--username` (no default).
-- `MIGRADO_PASS`: Specifies the database password for running migrations, replaces `-W`, `--password` (no default).
-
-YAML schemas
-------------
-
-ArangoDB may be schemaless, but in a larger project it still makes sense to keep a schema spec up to date, both for an overview of collections and their data structures, and as a basis for validation.
-
-migrado uses a schema model based on JSON Schema, in YAML, and can use this to generate an initial migration for the collections available in your database.
-
-Example schema:
-
-Migration scripts
------------------
-
-Migration scripts are structured so they may be parsed and run easily by both migrado and ArangoDB. In addition, they are structured so they may be run manually against ArangoDB using `arangosh`.
-
-There are two types of script, **data** and **schema** migration scripts.
-
-
--->
 
 ### Data migrations
 
@@ -159,6 +94,9 @@ function reverse(db) {
 
 Please be careful when running schema migrations in reverse. As you can see, the `reverse()` function above would drop your collections if you were to reverse beyond this point. Currently, you will not be able to do so for an initial migration.
 
+References
+----------
++ [Multitenancy in Laravel: Migrations, Testing, and switching tenants](https://www.youtube.com/watch?v=592EgykFOz4)
 
 Influenced From
 ---------------

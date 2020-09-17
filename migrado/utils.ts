@@ -17,17 +17,27 @@ export interface FilePathObject {
   [field: string]: string;
 }
 
-export const directoryFileSort = async (
+/**
+ * Title: getMigrationFileAsObject
+ * Description:
+ *  Here we get the migration file as a key pair
+ * Example:
+ * { "000_spec": "/app/migration/000_spec.js", "001_migration":"/app/migrations/001_migration.ts" }
+ */
+export const getMigrationFileAsObject = async (
   directory: string
 ): Promise<FilePathObject> => {
-  // const files = await klaw(directory);
   return new Promise((resolve, reject) => {
     const files: any = {};
+
+    // Go through the directory and get the files.
     const items: any = klawSync(directory, { nodir: true });
     if (items) {
       items.map((item: any) => {
+        // Replace all the unnecessary suffixes to get the key.
         const key = item.path.replace(/^.*[\\/]/, "").replace(/\.[^/.]+$/, "");
         const path = item.path;
+        // Example:{ "000_spec": "000_spec.js" }, where `key` is `000_spec` and `path` is `/app/migration/000_spec.js`
         files[key] = path;
       });
       resolve(files);
@@ -47,16 +57,20 @@ export const sortKeys = (unordered: FilePathObject): FilePathObject => {
   return ordered;
 };
 
-export const checkMigrations = (migrations: string[]) => {
-  if (migrations?.length > 0) {
-    logger.info("No migrations found");
+export const checkMigrations = (migrations: string[]): boolean => {
+  if (migrations?.length === 0) {
+    logger.error("No migrations found");
+    return false;
   }
+  return true;
 };
 
-export const checkDb = (db: string) => {
+export const checkDb = (db: string): boolean => {
   if (!db) {
     logger.info("No migrations found");
+    return false;
   }
+  return true;
 };
 
 export enum MIGRATION_DIRECTION {

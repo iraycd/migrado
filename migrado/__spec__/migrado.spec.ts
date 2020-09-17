@@ -24,7 +24,7 @@ describe("WHILE testing migrado client", () => {
     beforeAll(async () => {
       await inspect({
         path: __dirname + "/migrations",
-        migrationConfig: {
+        dbConfig: {
           username: MIGRADO_USERNAME,
           databaseName: MIGRADO_DB,
           host: MIGRADO_HOST,
@@ -32,6 +32,8 @@ describe("WHILE testing migrado client", () => {
         },
       });
     });
+
+    // TODO: Improve the tests with mocks.
     it("should log", () => {
       expect("work").toBe("work");
     });
@@ -43,7 +45,7 @@ describe("WHILE testing migrado client", () => {
     beforeAll(async () => {
       await run({
         path: __dirname + "/migrations",
-        migrationConfig: {
+        dbConfig: {
           username: MIGRADO_USERNAME,
           databaseName: MIGRADO_DB,
           host: MIGRADO_HOST,
@@ -83,6 +85,29 @@ describe("WHILE testing migrado client", () => {
     });
   });
 
+  describe('WHEN testing with unknown target', () => {
+    let err: any;
+    beforeAll(async () => {
+      try {
+        await run({
+          current: "000_spec",
+          path: __dirname + "/migrations",
+          target: '003_unknown_migration',
+          dbConfig: {
+            username: MIGRADO_USERNAME,
+            databaseName: MIGRADO_DB,
+            host: MIGRADO_HOST,
+            port: MIGRADO_PORT,
+          },
+        });
+      } catch (error) {
+        err = error.message
+      }
+    });
+    it('SHOULD catch the error', () => {
+      expect(err).toBe("Target 003_unknown_migration not found, please correct migration.")
+    })
+  })
   describe("WHEN forward migration", () => {
     let client: MigrationClient;
     let currentState: any;
@@ -90,7 +115,7 @@ describe("WHILE testing migrado client", () => {
       await run({
         current: "000_spec",
         path: __dirname + "/migrations",
-        migrationConfig: {
+        dbConfig: {
           username: MIGRADO_USERNAME,
           databaseName: MIGRADO_DB,
           host: MIGRADO_HOST,
@@ -126,7 +151,7 @@ describe("WHILE testing migrado client", () => {
       await run({
         target: "000_spec",
         path: __dirname + "/migrations",
-        migrationConfig: {
+        dbConfig: {
           username: MIGRADO_USERNAME,
           databaseName: MIGRADO_DB,
           host: MIGRADO_HOST,
